@@ -53,7 +53,9 @@ const toast = document.querySelector('#toast');
 const previewCanvas = document.querySelector('#previewCanvas');
 const themeDialog = document.querySelector('#themeDialog');
 const customSwatch = document.querySelector('#customSwatch');
+const zoomValue = document.querySelector('#zoomValue');
 let renderTimer;
+let viewScale = 1;
 let toastTimer;
 let currentSvg = '';
 let renderId = 0;
@@ -167,7 +169,7 @@ async function renderDiagram() {
     renderTime.textContent = `${Math.round(performance.now() - started)}ms`;
     localStorage.setItem('mermaid-studio-code', input.value);
     localStorage.setItem('mermaid-code-theme', currentThemeKey);
-    fitDiagram();
+    applyScale(viewScale);
   } catch (error) {
     if (thisRender !== renderId) return;
     currentSvg = '';
@@ -186,15 +188,39 @@ function scheduleRender() {
   renderTimer = setTimeout(renderDiagram, 420);
 }
 
-function fitDiagram() {
+function svgSize() {
   const svg = output.querySelector('svg');
-  const canvas = document.querySelector('#previewCanvas');
-  if (!svg || !canvas) return;
-  const width = parseFloat(svg.getAttribute('width')) || svg.viewBox?.baseVal?.width || svg.getBoundingClientRect().width;
-  const available = Math.max(200, canvas.clientWidth - 58);
-  const scale = Math.min(1, available / width);
-  output.style.transform = `scale(${scale})`;
-  output.style.margin = scale < 1 ? `${-(1-scale) * svg.getBoundingClientRect().height / 2}px ${-(1-scale) * width / 2}px` : '0';
+  if (!svg) return null;
+  const rect = svg.getBoundingClientRect();
+  const known = viewScale || 1;
+  if (rect.width && rect.height) return { width: rect.width / known, height: rect.height / known };
+  const vb = svg.viewBox?.baseVal;
+  if (vb && vb.width) return { width: vb.width, height: vb.height };
+  return null;
+}
+
+function applyScale(next) {
+  const size = svgSize();
+  if (!size) return;
+  viewScale = Math.min(4, Math.max(0.2, next));
+  output.style.transform = `scale(${viewScale})`;
+  output.style.margin = `${-(1 - viewScale) * size.height / 2}px ${-(1 - viewScale) * size.width / 2}px`;
+  zoomValue.textContent = `${Math.round(viewScale * 100)}%`;
+}
+
+function fitDiagram() {
+  const size = svgSize();
+  if (!size) return;
+  const scale = Math.min(1,
+    (previewCanvas.clientWidth - 56) / size.width,
+    (previewCanvas.clientHeight - 56) / size.height);
+  applyScale(scale);
+}
+
+function resetView() {
+  applyScale(1);
+  previewCanvas.scrollLeft = 0;
+  previewCanvas.scrollTop = 0;
 }
 
 function downloadBlob(blob, filename) {
@@ -248,9 +274,36 @@ input.addEventListener('keydown', event => {
 document.querySelector('#sampleButton').addEventListener('click', () => { input.value = sampleCode; scheduleRender(); showToast('Sample code loaded.'); });
 document.querySelector('#copyCodeButton').addEventListener('click', async () => { await navigator.clipboard.writeText(input.value); showToast('Code copied.'); });
 document.querySelector('#fitButton').addEventListener('click', fitDiagram);
+document.querySelector('#zoomInButton').addEventListener('click', () => applyScale(viewScale + 0.15));
+document.querySelector('#zoomOutButton').addEventListener('click', () => applyScale(viewScale - 0.15));
+zoomValue.addEventListener('click', resetView);
 document.querySelector('#downloadSvgButton').addEventListener('click', downloadSvg);
 document.querySelector('#downloadPngButton').addEventListener('click', downloadPng);
-window.addEventListener('resize', fitDiagram);
+window.addEventListener('resize', () => applyScale(viewScale));
+
+let panState = null;
+previewCanvas.addEventListener('pointerdown', event => {
+  if (event.pointerType !== 'mouse' || event.button !== 0) return;
+  panState = { x: event.clientX, y: event.clientY, left: previewCanvas.scrollLeft, top: previewCanvas.scrollTop };
+  previewCanvas.classList.add('panning');
+  previewCanvas.setPointerCapture(event.pointerId);
+});
+previewCanvas.addEventListener('pointermove', event => {
+  if (!panState) return;
+  previewCanvas.scrollLeft = panState.left - (event.clientX - panState.x);
+  previewCanvas.scrollTop = panState.top - (event.clientY - panState.y);
+});
+['pointerup', 'pointercancel'].forEach(type => previewCanvas.addEventListener(type, event => {
+  if (!panState) return;
+  panState = null;
+  previewCanvas.classList.remove('panning');
+  if (previewCanvas.hasPointerCapture(event.pointerId)) previewCanvas.releasePointerCapture(event.pointerId);
+}));
+previewCanvas.addEventListener('wheel', event => {
+  if (!event.ctrlKey && !event.metaKey) return;
+  event.preventDefault();
+  applyScale(viewScale + (event.deltaY < 0 ? 0.12 : -0.12));
+}, { passive: false });
 
 document.querySelectorAll('.theme-chip').forEach(button => button.addEventListener('click', () => {
   currentThemeKey = button.dataset.theme;

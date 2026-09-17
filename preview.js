@@ -60,23 +60,28 @@ function isDarkColor(hex) {
   return (red * 299 + green * 587 + blue * 114) / 1000 < 128;
 }
 
+function naturalSize(svg) {
+  const rect = svg.getBoundingClientRect();
+  const known = scale || 1;
+  if (rect.width && rect.height) return { width: rect.width / known, height: rect.height / known };
+  const vb = svg.viewBox?.baseVal;
+  return { width: vb?.width || 0, height: vb?.height || 0 };
+}
+
 function applyScale(nextScale) {
+  const svg = output.querySelector('svg');
+  const size = svg ? naturalSize(svg) : null;
   scale = Math.min(2.5, Math.max(.25, nextScale));
   output.style.transform = `scale(${scale})`;
-  const svg = output.querySelector('svg');
-  if (svg) {
-    const width = parseFloat(svg.getAttribute('width')) || svg.viewBox?.baseVal?.width || 0;
-    const height = parseFloat(svg.getAttribute('height')) || svg.viewBox?.baseVal?.height || 0;
-    output.style.margin = `${-(1-scale) * height / 2}px ${-(1-scale) * width / 2}px`;
-  }
+  if (size) output.style.margin = `${-(1-scale) * size.height / 2}px ${-(1-scale) * size.width / 2}px`;
   zoomLabel.textContent = `${Math.round(scale * 100)}%`;
 }
 
 function fitDiagram() {
   const svg = output.querySelector('svg');
   if (!svg) return;
-  const width = parseFloat(svg.getAttribute('width')) || svg.viewBox?.baseVal?.width || svg.getBoundingClientRect().width;
-  const height = parseFloat(svg.getAttribute('height')) || svg.viewBox?.baseVal?.height || svg.getBoundingClientRect().height;
+  const { width, height } = naturalSize(svg);
+  if (!width || !height) return;
   fitScale = Math.min(1, (stage.clientWidth - 90) / width, (stage.clientHeight - 120) / height);
   applyScale(fitScale);
 }
@@ -111,4 +116,29 @@ document.querySelector('#zoomOutButton').addEventListener('click', () => applySc
 document.querySelector('#zoomInButton').addEventListener('click', () => applyScale(scale + .1));
 zoomLabel.addEventListener('click', fitDiagram);
 window.addEventListener('resize', fitDiagram);
+
+let panState = null;
+stage.addEventListener('pointerdown', event => {
+  if (event.pointerType !== 'mouse' || event.button !== 0) return;
+  panState = { x: event.clientX, y: event.clientY, left: stage.scrollLeft, top: stage.scrollTop };
+  stage.classList.add('panning');
+  stage.setPointerCapture(event.pointerId);
+});
+stage.addEventListener('pointermove', event => {
+  if (!panState) return;
+  stage.scrollLeft = panState.left - (event.clientX - panState.x);
+  stage.scrollTop = panState.top - (event.clientY - panState.y);
+});
+['pointerup', 'pointercancel'].forEach(type => stage.addEventListener(type, event => {
+  if (!panState) return;
+  panState = null;
+  stage.classList.remove('panning');
+  if (stage.hasPointerCapture(event.pointerId)) stage.releasePointerCapture(event.pointerId);
+}));
+stage.addEventListener('dblclick', () => applyScale(Math.abs(scale - fitScale) < 0.02 ? 1 : fitScale));
+stage.addEventListener('wheel', event => {
+  if (!event.ctrlKey && !event.metaKey) return;
+  event.preventDefault();
+  applyScale(scale + (event.deltaY < 0 ? .12 : -.12));
+}, { passive: false });
 render();
