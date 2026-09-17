@@ -5,10 +5,11 @@ A static, browser-based Mermaid editor with a live diagram preview.
 ## Cloudflare Pages deployment
 
 - Build command: `yarn build` (runs `node build.mjs`)
-- Build output directory: project root
+- Build output directory: `dist`
 - Environment variable: `MERMAID_SITE_URL` = `https://mermaidcode.pages.dev`
 
-`build.mjs` generates `robots.txt` and `sitemap.xml`, and substitutes the
+`build.mjs` writes the deployable site to `dist/`: it generates `robots.txt`
+and `sitemap.xml`, copies the static assets, and substitutes the
 `__SITE_URL__` placeholder in `index.html` (canonical, Open Graph, Twitter and
 JSON-LD URLs) using `MERMAID_SITE_URL`. It falls back to
 `https://mermaidcode.pages.dev` when the variable is not set.

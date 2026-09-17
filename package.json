@@ -6,7 +6,7 @@
   "packageManager": "yarn@4.9.2",
   "scripts": {
     "build": "node build.mjs",
-    "dev": "node build.mjs && python -m http.server 4173",
-    "start": "node build.mjs && python -m http.server 4173"
+    "dev": "node build.mjs && python -m http.server 4173 --directory dist",
+    "start": "node build.mjs && python -m http.server 4173 --directory dist"
   }
 }
