@@ -22,13 +22,13 @@ a { color: inherit; text-decoration: none; }
 .privacy-pill { display: inline-flex; align-items: center; gap: 7px; color: #bcbcbc; font-size: .7rem; white-space: nowrap; }
 .privacy-pill span { width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 7px rgba(78,201,176,.55); }
 main { overflow: hidden; }
-.studio-shell { min-height: calc(100vh - 35px); display: grid; grid-template-columns: 48px minmax(0,1fr); background: var(--surface); }
+.studio-shell { height: calc(100vh - 35px); display: grid; grid-template-columns: 48px minmax(0,1fr); background: var(--surface); }
 .activity-bar { background: #181818; border-right: 1px solid var(--line); display: flex; flex-direction: column; align-items: center; padding-top: 7px; }
 .activity { width: 48px; height: 48px; display: grid; place-items: center; color: #858585; border-left: 2px solid transparent; }
 .activity svg { width: 23px; fill: none; stroke: currentColor; stroke-width: 1.6; }
 .activity:hover { color: #d7d7d7; }
 .activity.active { color: white; border-left-color: var(--purple); }
-.workbench { min-width: 0; display: flex; flex-direction: column; }
+.workbench { min-width: 0; min-height: 0; display: flex; flex-direction: column; }
 .intro { min-height: 64px; padding: 11px 18px; display: flex; align-items: center; gap: 26px; background: #1e1e1e; border-bottom: 1px solid var(--line); }
 .intro > div { display: flex; align-items: baseline; gap: 12px; }
 .eyebrow { margin: 0; color: #b17cff; font: 700 .64rem/1.2 Consolas, ui-monospace, monospace; letter-spacing: .12em; }
@@ -50,7 +50,7 @@ h1 { margin: 0; font-size: 1.25rem; line-height: 1.1; font-weight: 600; letter-s
 .custom-theme-button { height: 30px; flex: 0 0 auto; margin-left: auto; padding: 0 9px; display: inline-flex; align-items: center; gap: 7px; color: #ddd; background: #2c2c2c; border: 1px solid #484848; border-radius: 4px; font-size: .67rem; }
 .custom-theme-button:hover { background: #3a3a3a; border-color: #7650bb; }
 .custom-swatch { width: 15px; height: 15px; border-radius: 50%; background: conic-gradient(#6366f1,#c7d2fe,#1e293b,#6366f1); border: 1px solid rgba(255,255,255,.35); }
-.workspace { flex: 1; min-height: 620px; display: grid; grid-template-columns: minmax(360px,.9fr) minmax(460px,1.1fr); background: #151515; }
+.workspace { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(360px,.9fr) minmax(460px,1.1fr); background: #151515; }
 .panel { min-width: 0; display: flex; flex-direction: column; overflow: hidden; background: var(--surface); border-right: 1px solid var(--line); }
 .panel:last-child { border-right: 0; }
 .panel-head { min-height: 38px; padding: 0 10px 0 13px; display: flex; align-items: center; justify-content: space-between; gap: 10px; border-bottom: 1px solid var(--line); background: var(--chrome-2); }
@@ -82,8 +82,8 @@ textarea::selection { background: #264f78; }
 .preview-canvas::-webkit-scrollbar-thumb { background: #9a9a9a; border: 3px solid #e3e3e3; border-radius: 8px; }
 .preview-canvas::-webkit-scrollbar-thumb:hover { background: var(--purple-2); }
 .preview-canvas::-webkit-scrollbar-corner { background: #e3e3e3; }
-.diagram-output { min-width: max-content; transform-origin: center; transition: transform .16s; }
-.diagram-output svg { display: block; max-width: none; height: auto; }
+.diagram-output { min-width: max-content; user-select: none; -webkit-user-drag: none; }
+.diagram-output svg { display: block; max-width: none; height: auto; -webkit-user-drag: none; }
 .zoom-group { display: inline-flex; align-items: center; overflow: hidden; background: #303030; border: 1px solid #444; border-radius: 3px; }
 .zoom-group .zoom-step { width: 25px; height: 27px; border: 0; border-radius: 0; background: transparent; }
 .zoom-value { height: 27px; min-width: 46px; padding: 0 4px; color: #d8d8d8; background: transparent; border: 0; border-left: 1px solid #444; border-right: 1px solid #444; font: 600 .62rem Consolas, monospace; }
@@ -151,6 +151,7 @@ footer { min-height: 150px; max-width: 1180px; margin: 0 auto; padding: 38px 32p
 .primary-button:hover { background: #7a2b8d; }
 @media (max-width: 900px) {
   .command-center { display: none; } .privacy-pill { margin-left: auto; }
+  .studio-shell { height: auto; }
   .studio-shell { grid-template-columns: 42px minmax(0,1fr); } .activity { width: 42px; }
   .intro { align-items: flex-start; flex-direction: column; gap: 5px; } .intro-copy { margin: 0; }
   .theme-chip span { display: none; }

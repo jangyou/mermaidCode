@@ -163,6 +163,7 @@ async function renderDiagram() {
     currentSvg = svg;
     output.innerHTML = svg;
     bindFunctions?.(output);
+    measureDiagram();
     errorState.hidden = true;
     loading.style.display = 'none';
     setStatus('ready', 'Rendered');
@@ -188,32 +189,34 @@ function scheduleRender() {
   renderTimer = setTimeout(renderDiagram, 420);
 }
 
-function svgSize() {
+let diagramSize = { width: 0, height: 0 };
+
+function measureDiagram() {
   const svg = output.querySelector('svg');
-  if (!svg) return null;
-  const rect = svg.getBoundingClientRect();
-  const known = viewScale || 1;
-  if (rect.width && rect.height) return { width: rect.width / known, height: rect.height / known };
+  if (!svg) return false;
+  svg.style.maxWidth = 'none';
+  svg.style.width = '';
+  svg.style.height = '';
   const vb = svg.viewBox?.baseVal;
-  if (vb && vb.width) return { width: vb.width, height: vb.height };
-  return null;
+  diagramSize.width = Math.round(vb?.width || parseFloat(svg.getAttribute('width')) || 0);
+  diagramSize.height = Math.round(vb?.height || parseFloat(svg.getAttribute('height')) || 0);
+  return diagramSize.width > 0 && diagramSize.height > 0;
 }
 
 function applyScale(next) {
-  const size = svgSize();
-  if (!size) return;
   viewScale = Math.min(4, Math.max(0.2, next));
-  output.style.transform = `scale(${viewScale})`;
-  output.style.margin = `${-(1 - viewScale) * size.height / 2}px ${-(1 - viewScale) * size.width / 2}px`;
+  const svg = output.querySelector('svg');
+  if (!svg || !diagramSize.width) return;
+  svg.setAttribute('width', Math.round(diagramSize.width * viewScale));
+  svg.setAttribute('height', Math.round(diagramSize.height * viewScale));
   zoomValue.textContent = `${Math.round(viewScale * 100)}%`;
 }
 
 function fitDiagram() {
-  const size = svgSize();
-  if (!size) return;
+  if (!diagramSize.width) return;
   const scale = Math.min(1,
-    (previewCanvas.clientWidth - 56) / size.width,
-    (previewCanvas.clientHeight - 56) / size.height);
+    (previewCanvas.clientWidth - 56) / diagramSize.width,
+    (previewCanvas.clientHeight - 56) / diagramSize.height);
   applyScale(scale);
 }
 
@@ -284,6 +287,7 @@ window.addEventListener('resize', () => applyScale(viewScale));
 let panState = null;
 previewCanvas.addEventListener('pointerdown', event => {
   if (event.pointerType !== 'mouse' || event.button !== 0) return;
+  event.preventDefault();
   panState = { x: event.clientX, y: event.clientY, left: previewCanvas.scrollLeft, top: previewCanvas.scrollTop };
   previewCanvas.classList.add('panning');
   previewCanvas.setPointerCapture(event.pointerId);

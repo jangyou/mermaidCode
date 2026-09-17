@@ -60,29 +60,32 @@ function isDarkColor(hex) {
   return (red * 299 + green * 587 + blue * 114) / 1000 < 128;
 }
 
-function naturalSize(svg) {
-  const rect = svg.getBoundingClientRect();
-  const known = scale || 1;
-  if (rect.width && rect.height) return { width: rect.width / known, height: rect.height / known };
+let diagramSize = { width: 0, height: 0 };
+
+function measureDiagram() {
+  const svg = output.querySelector('svg');
+  if (!svg) return false;
+  svg.style.maxWidth = 'none';
+  svg.style.width = '';
+  svg.style.height = '';
   const vb = svg.viewBox?.baseVal;
-  return { width: vb?.width || 0, height: vb?.height || 0 };
+  diagramSize.width = Math.round(vb?.width || parseFloat(svg.getAttribute('width')) || 0);
+  diagramSize.height = Math.round(vb?.height || parseFloat(svg.getAttribute('height')) || 0);
+  return diagramSize.width > 0 && diagramSize.height > 0;
 }
 
 function applyScale(nextScale) {
-  const svg = output.querySelector('svg');
-  const size = svg ? naturalSize(svg) : null;
   scale = Math.min(2.5, Math.max(.25, nextScale));
-  output.style.transform = `scale(${scale})`;
-  if (size) output.style.margin = `${-(1-scale) * size.height / 2}px ${-(1-scale) * size.width / 2}px`;
+  const svg = output.querySelector('svg');
+  if (!svg || !diagramSize.width) return;
+  svg.setAttribute('width', Math.round(diagramSize.width * scale));
+  svg.setAttribute('height', Math.round(diagramSize.height * scale));
   zoomLabel.textContent = `${Math.round(scale * 100)}%`;
 }
 
 function fitDiagram() {
-  const svg = output.querySelector('svg');
-  if (!svg) return;
-  const { width, height } = naturalSize(svg);
-  if (!width || !height) return;
-  fitScale = Math.min(1, (stage.clientWidth - 90) / width, (stage.clientHeight - 120) / height);
+  if (!diagramSize.width) return;
+  fitScale = Math.min(1, (stage.clientWidth - 90) / diagramSize.width, (stage.clientHeight - 120) / diagramSize.height);
   applyScale(fitScale);
 }
 
@@ -102,6 +105,7 @@ async function render() {
     const { svg, bindFunctions } = await mermaid.render('fullscreen-diagram', code);
     output.innerHTML = svg;
     bindFunctions?.(output);
+    measureDiagram();
     loading.hidden = true;
     fitDiagram();
   } catch {
@@ -120,6 +124,7 @@ window.addEventListener('resize', fitDiagram);
 let panState = null;
 stage.addEventListener('pointerdown', event => {
   if (event.pointerType !== 'mouse' || event.button !== 0) return;
+  event.preventDefault();
   panState = { x: event.clientX, y: event.clientY, left: stage.scrollLeft, top: stage.scrollTop };
   stage.classList.add('panning');
   stage.setPointerCapture(event.pointerId);
