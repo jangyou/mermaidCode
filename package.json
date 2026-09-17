@@ -1,0 +1,10 @@
+{
+  "name": "mermaid-code",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Mermaid Code - a live Mermaid diagram editor",
+  "scripts": {
+    "dev": "python -m http.server 4173",
+    "start": "python -m http.server 4173"
+  }
+}

@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mermaid Code | Live Mermaid Diagram Editor</title>
+  <meta name="description" content="Write Mermaid code and see sequence diagrams, flowcharts, class diagrams, and more update in real time. Export clean SVG or PNG files in your browser." />
+  <meta name="author" content="Mermaid Code" />
+  <meta name="keywords" content="Mermaid editor, Mermaid diagram generator, sequence diagram, flowchart, Mermaid live preview, SVG diagram" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Mermaid Code | Live Mermaid Diagram Editor" />
+  <meta property="og:description" content="Write Mermaid code, preview diagrams live, and export SVG or PNG files directly in your browser." />
+  <meta property="og:site_name" content="Mermaid Code" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Mermaid Code | Live Mermaid Diagram Editor" />
+  <meta name="twitter:description" content="A fast, private Mermaid editor with live preview and SVG/PNG export." />
+  <meta name="theme-color" content="#181818" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23181818'/%3E%3Cpath d='M12 19 28 11v9l18-7 6 6v26l-6 6-18-7v9l-16-8-6-9V28z' fill='%2368217a' stroke='%23b07cff' stroke-width='3'/%3E%3Cpath d='m20 27 11 5 12-7v14l-12-7-11 5z' fill='%23fff'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="/styles.css" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Mermaid Code",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Web",
+    "inLanguage": "en",
+    "description": "A browser-based Mermaid editor with live diagram preview and SVG or PNG export.",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "KRW" },
+    "featureList": ["Live Mermaid preview", "Sequence diagrams", "SVG export", "PNG export"]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "Is my code stored on a server?", "acceptedAnswer": { "@type": "Answer", "text": "No. Your code is processed in the browser, and autosaved data stays on this device." } },
+      { "@type": "Question", "name": "What diagrams can I create?", "acceptedAnswer": { "@type": "Answer", "text": "You can use Mermaid syntax for sequence, flowchart, class, state, ER, Gantt, pie, and more." } },
+      { "@type": "Question", "name": "Can I edit downloaded SVG files?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Open SVG files in Figma, Illustrator, Inkscape, or another vector editor." } }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="/" aria-label="Mermaid Code home">
+      <span class="brand-mark" aria-hidden="true">M</span>
+      <span>Mermaid Code</span>
+    </a>
+    <nav class="menu-bar" aria-label="Main menu">
+      <a href="#editor">File</a>
+      <a href="#guide">View</a>
+      <a href="#faq">Help</a>
+    </nav>
+    <div class="command-center" aria-hidden="true"><span>⌕</span> Search Mermaid commands or syntax</div>
+    <span class="privacy-pill"><span aria-hidden="true"></span>Local only</span>
+  </header>
+
+  <main>
+    <section class="studio-shell" aria-labelledby="page-title">
+      <aside class="activity-bar" aria-label="Workspace tools">
+        <a class="activity active" href="#editor" aria-label="Editor"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h10l4 4v14H5zM15 3v5h5M8 12h8M8 16h8"/></svg></a>
+        <a class="activity" href="#guide" aria-label="Guide"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m16 16 5 5"/></svg></a>
+        <a class="activity" href="#faq" aria-label="Help"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.7 2.7 0 0 1 5.2 1c0 2-2.7 2-2.7 4M12 18h.01"/></svg></a>
+      </aside>
+      <div class="workbench">
+        <div class="intro">
+          <div>
+            <p class="eyebrow">MERMAID WORKBENCH</p>
+            <h1 id="page-title">Mermaid Code</h1>
+          </div>
+          <p class="intro-copy">Write code on the left and see your diagram update in real time on the right.</p>
+        </div>
+        <div class="tab-strip" aria-label="Open files">
+          <div class="file-tab active"><span class="mermaid-icon">M</span> diagram.mmd <span class="tab-close">×</span></div>
+          <div class="file-tab"><span class="preview-icon">◇</span> Preview</div>
+        </div>
+
+        <div class="theme-bar" aria-label="Diagram color themes">
+          <span class="theme-label">COLOR THEME</span>
+          <div class="theme-presets" id="themePresets">
+            <button class="theme-chip active" type="button" data-theme="indigo" aria-label="Modern Indigo theme" title="Modern Indigo"><i style="--c1:#eef2ff;--c2:#6366f1;--c3:#1e293b"></i><span>Indigo</span></button>
+            <button class="theme-chip" type="button" data-theme="graphite" aria-label="Graphite theme" title="Graphite"><i style="--c1:#27272a;--c2:#71717a;--c3:#fafafa"></i><span>Graphite</span></button>
+            <button class="theme-chip" type="button" data-theme="ocean" aria-label="Ocean theme" title="Ocean"><i style="--c1:#e0f2fe;--c2:#0284c7;--c3:#0c4a6e"></i><span>Ocean</span></button>
+            <button class="theme-chip" type="button" data-theme="mint" aria-label="Mint theme" title="Mint"><i style="--c1:#ccfbf1;--c2:#0f766e;--c3:#134e4a"></i><span>Mint</span></button>
+            <button class="theme-chip" type="button" data-theme="rose" aria-label="Rose theme" title="Rose"><i style="--c1:#ffe4e6;--c2:#e11d48;--c3:#881337"></i><span>Rose</span></button>
+            <button class="theme-chip" type="button" data-theme="amber" aria-label="Amber theme" title="Amber"><i style="--c1:#fef3c7;--c2:#d97706;--c3:#78350f"></i><span>Amber</span></button>
+            <button class="theme-chip" type="button" data-theme="slate" aria-label="Slate Blue theme" title="Slate Blue"><i style="--c1:#e2e8f0;--c2:#2563eb;--c3:#1e293b"></i><span>Slate</span></button>
+            <button class="theme-chip" type="button" data-theme="classic" aria-label="Classic theme" title="Classic"><i style="--c1:#e8f3ff;--c2:#337ca8;--c3:#25364a"></i><span>Classic</span></button>
+          </div>
+          <button class="custom-theme-button" id="customThemeButton" type="button"><span class="custom-swatch" id="customSwatch"></span>Custom palette</button>
+        </div>
+
+        <section class="workspace" id="editor" aria-label="Mermaid diagram editor">
+          <div class="panel code-panel">
+            <div class="panel-head">
+              <div>
+                <span class="panel-index">MERMAID</span>
+                <h2>diagram.mmd</h2>
+              </div>
+              <div class="panel-actions">
+                <button class="text-button" id="sampleButton" type="button">Open sample</button>
+                <button class="icon-button" id="copyCodeButton" type="button" aria-label="Copy code" title="Copy code">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 8h11v11H8zM5 16H4V5h11v1"/></svg>
+                </button>
+              </div>
+            </div>
+            <div class="editor-wrap">
+              <pre class="line-numbers" id="lineNumbers" aria-hidden="true">1</pre>
+              <textarea id="codeInput" aria-label="Mermaid diagram code" spellcheck="false" wrap="off"></textarea>
+            </div>
+            <div class="panel-foot">
+              <span id="lineCount">1 line</span>
+              <span>UTF-8&nbsp;&nbsp; Mermaid</span>
+            </div>
+          </div>
+
+          <div class="panel preview-panel">
+            <div class="panel-head">
+              <div>
+                <span class="panel-index">PREVIEW</span>
+                <h2>Diagram preview</h2>
+                <a class="icon-button expand-button" href="/preview.html" aria-label="Expand diagram preview" title="Open large preview">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5m13 5h5v-5"/></svg>
+                </a>
+              </div>
+              <div class="panel-actions">
+                <button class="text-button" id="fitButton" type="button">Fit</button>
+                <button class="download-button" id="downloadSvgButton" type="button">SVG</button>
+                <button class="download-button" id="downloadPngButton" type="button">PNG</button>
+              </div>
+            </div>
+            <div class="preview-canvas" id="previewCanvas">
+              <div class="loading-state" id="loadingState">
+                <span class="loader" aria-hidden="true"></span>
+                <p>Rendering diagram…</p>
+              </div>
+              <div class="diagram-output" id="diagramOutput" role="img" aria-label="Rendered Mermaid diagram"></div>
+              <div class="error-state" id="errorState" hidden>
+                <strong>Could not render the code</strong>
+                <p id="errorMessage">Check the Mermaid syntax.</p>
+              </div>
+            </div>
+            <div class="panel-foot status-foot">
+              <span><i class="status-dot" id="statusDot"></i><span id="statusText">Ready to render</span></span>
+              <span id="renderTime">—</span>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <aside class="ad-slot" aria-label="Advertising space">
+      <span>ADVERTISEMENT</span>
+      <p>A space for useful design and developer tools.</p>
+    </aside>
+
+    <section class="guide-section" id="guide">
+      <div class="section-heading">
+        <p class="eyebrow">QUICK START</p>
+        <h2>Build a Mermaid diagram<br>in three steps.</h2>
+      </div>
+      <ol class="steps">
+        <li><span>1</span><div><h3>Declare the diagram type</h3><p>Start with a type such as <code>sequenceDiagram</code> or <code>flowchart</code>.</p></div></li>
+        <li><span>2</span><div><h3>Describe the relationships</h3><p>Write participants, nodes, and connections as text to update the live preview.</p></div></li>
+        <li><span>3</span><div><h3>Export an image</h3><p>Use SVG for vector editing and PNG for documents or sharing.</p></div></li>
+      </ol>
+    </section>
+
+    <section class="types-section" aria-labelledby="types-title">
+      <div class="types-copy">
+        <p class="eyebrow">ONE EDITOR, MANY FLOWS</p>
+        <h2 id="types-title">Turn ideas into clear<br>diagrams.</h2>
+        <p>Map service architecture, system communication, workflows, and data structures with Mermaid in one focused editor.</p>
+      </div>
+      <div class="type-grid">
+        <article><span>01</span><svg viewBox="0 0 120 70" aria-hidden="true"><rect x="4" y="22" width="28" height="24"/><rect x="88" y="22" width="28" height="24"/><path d="M32 34h56m-8-7 8 7-8 7"/></svg><h3>Sequence</h3><p>API communication and user journeys</p></article>
+        <article><span>02</span><svg viewBox="0 0 120 70" aria-hidden="true"><rect x="4" y="22" width="28" height="24"/><rect x="88" y="22" width="28" height="24"/><circle cx="60" cy="34" r="12"/><path d="M32 34h16m24 0h16"/></svg><h3>Flowchart</h3><p>Processes and decisions</p></article>
+        <article><span>03</span><svg viewBox="0 0 120 70" aria-hidden="true"><rect x="8" y="10" width="38" height="50"/><path d="M8 27h38M27 60v7m0-57V3m19 32h30"/><rect x="76" y="22" width="36" height="26"/></svg><h3>Class</h3><p>Objects and data relationships</p></article>
+        <article><span>04</span><svg viewBox="0 0 120 70" aria-hidden="true"><circle cx="18" cy="35" r="10"/><circle cx="60" cy="18" r="10"/><circle cx="102" cy="35" r="10"/><circle cx="60" cy="55" r="10"/><path d="M27 31l24-10m18 0 24 10M93 40 69 51M51 51 27 40"/></svg><h3>State</h3><p>State changes and transitions</p></article>
+      </div>
+    </section>
+
+    <section class="faq-section" id="faq" aria-labelledby="faq-title">
+      <div class="section-heading">
+        <p class="eyebrow">FAQ</p>
+        <h2 id="faq-title">Frequently asked questions</h2>
+      </div>
+      <div class="faq-list">
+        <details><summary>Is my code stored on a server?<span>+</span></summary><p>No. Your code is processed in the browser, and autosaved data stays on this device.</p></details>
+        <details><summary>What diagrams can I create?<span>+</span></summary><p>You can use Mermaid syntax for sequence, flowchart, class, state, ER, Gantt, pie, and more.</p></details>
+        <details><summary>Can I edit downloaded SVG files?<span>+</span></summary><p>Yes. Open SVG files in Figma, Illustrator, Inkscape, or another vector editor.</p></details>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <a class="brand footer-brand" href="/"><span class="brand-mark" aria-hidden="true">M</span><span>Mermaid Code</span></a>
+    <p>Make complex flows clear.</p>
+    <p class="copyright">© 2026 Mermaid Code</p>
+  </footer>
+
+  <dialog class="theme-dialog" id="themeDialog" aria-labelledby="themeDialogTitle">
+    <form method="dialog" id="customThemeForm">
+      <div class="dialog-head">
+        <div><span class="dialog-kicker">CUSTOM PALETTE</span><h2 id="themeDialogTitle">Custom diagram colors</h2></div>
+        <button class="dialog-close" value="cancel" aria-label="Close">×</button>
+      </div>
+      <p>Choose colors for nodes, lines, accents, and text.</p>
+      <div class="color-fields">
+        <label><span>Canvas</span><input type="color" id="customBackground" value="#f8fafc" /></label>
+        <label><span>Nodes</span><input type="color" id="customNode" value="#eef2ff" /></label>
+        <label><span>Borders</span><input type="color" id="customBorder" value="#6366f1" /></label>
+        <label><span>Connectors</span><input type="color" id="customLine" value="#475569" /></label>
+        <label><span>Accent</span><input type="color" id="customAccent" value="#c7d2fe" /></label>
+        <label><span>Text</span><input type="color" id="customText" value="#1e293b" /></label>
+      </div>
+      <div class="dialog-actions"><button value="cancel" class="secondary-button">Cancel</button><button value="default" id="applyCustomTheme" class="primary-button">Apply colors</button></div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>
