@@ -3,8 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "description": "Mermaid Code - a live Mermaid diagram editor",
+  "packageManager": "yarn@4.9.2",
   "scripts": {
-    "dev": "python -m http.server 4173",
-    "start": "python -m http.server 4173"
+    "build": "node build.mjs",
+    "dev": "node build.mjs && python -m http.server 4173",
+    "start": "node build.mjs && python -m http.server 4173"
   }
 }
